@@ -1,21 +1,29 @@
+import React, { useEffect } from 'react'
 import './App.css'
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircleIcon, CheckCircle2Icon, PopcornIcon } from "lucide-react"
+import { useNavigate } from 'react-router-dom'
+import Header from './components/landing/Header'
 
-function App() {
+const App = () => {
 
+  const user = {
+    type: 'patient'
+  }
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user.type == 'doctor') {
+      navigate('/doctor/dashboard')
+    }
+  }, [user, navigate])
+
+  if (user.type == 'doctor') {
+    return null
+  }
   return (
-    <>
-      <h1 className="font-bold text-4xl text-blue-500">Doctor Appointment App</h1>
-       <Alert>
-        <CheckCircle2Icon />
-        <AlertTitle>Success! Your changes have been saved</AlertTitle>
-        <AlertDescription>
-          This is an alert with icon, title and description.
-        </AlertDescription>
-      </Alert>
-        
-    </>
+    <div className='min-h-screen'>
+      <Header showDashboardNav={true} />
+    </div>
   )
 }
 
