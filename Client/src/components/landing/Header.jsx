@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Bell, Calendar, Stethoscope } from "lucide-react";
+import { User, Bell, Calendar, Stethoscope, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { DropdownMenuLabel, DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 
 const Header = ({ showDashboardNav = true }) => {
   const { pathname } = useLocation();
@@ -33,6 +34,7 @@ const Header = ({ showDashboardNav = true }) => {
           icon: Calendar,
           href: "/patient/dashboard",
           active: pathname.includes("/patient/dashboard"),
+          email:"nikhilverma97988@gmail.com"
         },
       ];
     }
@@ -128,8 +130,36 @@ const Header = ({ showDashboardNav = true }) => {
                 </Button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="right" className='w-56'>
-                
+              <DropdownMenuContent align="end" className='w-56'>
+                <DropdownMenuLabel>
+                  <div className='flex items-center space-x-2'>
+                    <Avatar className="w-10 h-10">
+                    <AvatarImage src={user?.profileImage} />
+                    <AvatarFallback className="bg-black text-white font-bold">
+                       {
+                       user?.name
+                       ?.split(" ").map((n)=>n[0]).join("").toUpperCase()
+                      }
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="md:block text-left">
+                      <p className=" text-gray-900 truncate ">
+                        {user?.name}
+                      </p>
+                      <p className="text-xs text-gray-500 capitalize truncate max-w-[140px]">
+                      {user?.type}
+                    </p>
+                  </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator>
+                  <DropdownMenuItem asChild>
+                      <Link to={`/{user.type}/settings`} className="flex items-center">
+                        <Settings className="w-4 h-4 mr-2" />
+                        Profile
+                      </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuSeparator>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
