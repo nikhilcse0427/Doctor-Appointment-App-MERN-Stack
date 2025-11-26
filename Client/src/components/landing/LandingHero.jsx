@@ -6,7 +6,7 @@ import { healthcareCategories } from '@/lib/constants'
 const LandingHero = () => {
   return (
     <div className='bg-[#d8e4ff]'>
-    <section className="py-10 px-4 rounded mt-10">
+    <section className="py-10 px-4 rounded mt-7">
       <div className='px-20 py-10'>
         <h1 className='text-center font-bold sm: md:leading-tight py-2 text-5xl'>A place where care meets convenience<br />
         <span className='text-blue-800'>Your health, our priority — always</span></h1>
@@ -52,7 +52,7 @@ const LandingHero = () => {
   </div>
 </section>
 
-    <div className='flex flex-wrap justify-center gap-5 text-gray-60 mt-4  pb-8'>
+    <div className='flex flex-wrap justify-center gap-5 text-gray-60 mt-6  pb-12'>
       <div className='flex justify-row items-center gap-2'>
         <div className='bg-green-300 rounded-full w-2 h-2'></div>
         <span>500+ Certified Doctors</span>
