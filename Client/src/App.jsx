@@ -2,6 +2,10 @@ import React, { useEffect } from 'react'
 import './App.css'
 import { useNavigate } from 'react-router-dom'
 import Header from './components/landing/Header'
+import LandingHero from './components/landing/LandingHero'
+import Testimonial from './components/landing/Testimonial'
+import FaqSection from './components/landing/FaqSection'
+import Footer from './components/landing/Footer'
 
 const App = () => {
 
@@ -21,8 +25,15 @@ const App = () => {
     return null
   }
   return (
-    <div className='min-h-screen'>
+    <div className='min-h-screen mx-7'>
       <Header showDashboardNav={true} />
+      <main className="pt-16">
+        <LandingHero />
+        <Testimonial />
+        <FaqSection />
+        <Footer />
+      </main>
+      
     </div>
   )
 }
