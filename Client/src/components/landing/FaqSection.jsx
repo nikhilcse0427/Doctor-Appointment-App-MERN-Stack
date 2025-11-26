@@ -24,13 +24,13 @@ const FaqSection = () => {
           }
         </div>
           {/* Frequently asked question */}
-          <div className='mt-20 flex flex-col justify-center items-center'>
+          <div className='mt-20 flex flex-col justify-center items-center sm:w-full'>
             <h2 className='font-bold text-4xl text-center p-4'>Frequently asked Questions</h2>
-            <div className='w-200'>
+            <div className='w-full max-w-4xl px-4'>
             {
               faqs.map((faq, idx)=>{
                 return(
-                  <div key={idx} className='box-shadow-lg border-solid  border rounded-md sm z-10 p-5 mt-5'>
+                  <div key={idx} className='box-shadow-lg border-solid  border rounded-md sm z-10 p-5 mt-5 transition-colors duration-200'>
                     <div 
                     onClick={()=>(handleToggleBtn(idx))}
                     className='flex justify-between'>
