@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-
+import {healthcareCategoriesList} from '../constant.js'
 const dailyTimeAvailabilitySchema = new mongoose.Schema({
   start:{
     type:String
@@ -94,4 +94,4 @@ const doctorSchema = new mongoose.Schema({
 },{timestamps:true})
 
 const Doctor = mongoose.model('Doctor', doctorSchema)
-export {Doctor}
+export default Doctor

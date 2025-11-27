@@ -1,4 +1,40 @@
+import Doctor from "../models/doctor.model.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import ApiError from "../utils/Api_Errors.js";
 
-export const registerDoctor = ()=>{
+const signinToken = (id, type) => {
+  return jwt.sign({ id, type }, process.env.JWT_SECRET, { expiresIn: "7d" });
+};
 
-}
+export const registerDoctor = async (req, res, next) => {
+  try {
+    const { name, email, password, ...rest } = req.body;
+    if (!name || !email || !password) {
+      throw new ApiError(400, "name, email and password are required");
+    }
+
+    const existUser = await Doctor.findOne({ email });
+    if (existUser) {
+      throw new ApiError(409, "Doctor with this email already exist");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const createdDoctor = await Doctor.create({
+      name,
+      email,
+      password: hashedPassword,
+      ...rest,
+    });
+
+    const token = signinToken(createdDoctor._id, "doctor");
+    return res.status(201).json({
+      success: true,
+      message: "Doctor successfully registered",
+      token,
+      doctor: createdDoctor,
+    });
+  } catch (error) {
+    next(new ApiError(500, error.message));
+  }
+};
