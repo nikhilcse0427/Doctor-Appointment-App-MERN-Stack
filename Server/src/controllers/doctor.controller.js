@@ -1,7 +1,7 @@
 import ApiError from "../utils/Api_Errors"
 import {query} from 'express-validator'
-const Doctor = require("../modal/Doctor");
-const Appointment = require("../modal/Appointment");
+import Doctor from "../models/doctor.model";
+const Appointment = require("../model/Appointment");
 
 export const searchDoctor = async (req, res, next)=>{
   try {
