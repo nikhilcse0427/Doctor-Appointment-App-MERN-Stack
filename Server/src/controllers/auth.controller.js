@@ -10,10 +10,6 @@ const signinToken = (id, type) => {
 export const registerDoctor = async (req, res, next) => {
   try {
     const { name, email, password, ...rest } = req.body;
-    if (!name || !email || !password) {
-      throw new ApiError(400, "name, email and password are required");
-    }
-
     const existUser = await Doctor.findOne({ email });
     if (existUser) {
       throw new ApiError(409, "Doctor with this email already exist");
@@ -38,3 +34,26 @@ export const registerDoctor = async (req, res, next) => {
     next(new ApiError(500, error.message));
   }
 };
+
+export const loginDoctor = async (req, res, next)=>{
+  try{
+  const { email, password }  = req.body;
+  const existDoctor = await Doctor.findOne({email});
+  if(!existDoctor){
+    throw new ApiError(400, "email does not exist");
+  }
+  const matchPassword = await bcrypt.compare(password, existDoctor.password);
+  if(!matchPassword){
+    throw new ApiError(401, "Invalid password enetered")
+  }
+  const token = signinToken(existDoctor._id, "doctor")
+  return res.status(201).json({
+      success: true,
+      message: "Doctor successfully loggedin",
+      token,
+      doctor: existDoctor,
+    });
+  }catch(error){
+    next(new ApiError(500, error.message))
+  }
+}
