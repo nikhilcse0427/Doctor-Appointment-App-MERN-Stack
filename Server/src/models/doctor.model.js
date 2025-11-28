@@ -82,8 +82,8 @@ const doctorSchema = new mongoose.Schema({
     type:Number
   }, 
   availabiltyRange: dailyTimeAvailabilitySchema,
-  dailyTimeAvailability: dailyTimeAvailabilitySchema,
-  slotDuration:{
+  dailyTimeRanges: { type: [dailyTimeAvailabilitySchema], default:[]},
+  slotDurationInMinutes:{
     type:Number,
     default:30
   },
