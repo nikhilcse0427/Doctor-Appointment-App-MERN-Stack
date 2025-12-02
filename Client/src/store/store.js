@@ -1,4 +1,4 @@
-import { getWithAuth, postWithAuth, postWithoutAuth, putWithAuth } from "@/service/httpService";
+import { getWithAuth, postWithAuth, postWithoutAuth, putWithAuth } from "../services/httpService";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

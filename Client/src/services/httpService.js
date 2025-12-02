@@ -1,9 +1,7 @@
-const { deleteWithAuth, httpService } = require("@/components/rempAuth");
-
-const BASE_URL = process.env.REACT_PUBLIC_API_URL
+const BASE_URL = import.meta.env.REACT_PUBLIC_API_URL
 
 class HttpService{
-  #getAuthHeaders(){
+  getAuthHeaders(){
     const token = localStorage.getItem('token');
     return {
       "content-Type": "application/json",
@@ -13,7 +11,7 @@ class HttpService{
 
   getHeaders(auth = true){
     if(auth){
-      return this.#getAuthHeaders();
+      return this.getAuthHeaders();
     }
     return {"Content-Type": "application/json"}
   };
@@ -76,7 +74,7 @@ export const httpService = new HttpService();
 export const getWithAuth = httpService.getWithAuth.bind(httpService);
 
 export const postWithAuth = httpService.postWithAuth.bind(httpService);
-export const putWithAuth = httpService.putWithAuth.bind(httpService);
+export const putWithAuth = httpService.postWithAuth.bind(httpService);
 export const deleteWithAuth = httpService.deleteWithAuth.bind(httpService);
 
 export const postWithoutAuth = httpService.postWithoutAuth.bind(httpService);
