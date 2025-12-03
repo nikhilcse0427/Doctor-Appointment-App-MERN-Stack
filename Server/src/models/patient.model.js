@@ -1,7 +1,7 @@
 import { timeStamp } from 'console'
 import mongoose from 'mongoose'
 import computeAgeFromDob from '../utils/date.js'
-const emergencyContact = new mongoose.Schema({
+const emergencyContactSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
@@ -16,7 +16,7 @@ const emergencyContact = new mongoose.Schema({
   }
 },{id:false})
 
-const medicalHistory = new mongoose.Schema({
+const medicalHistorySchema = new mongoose.Schema({
   allergies:{
     type: String, 
     default: ""
@@ -71,8 +71,8 @@ const patientSchema = new mongoose.Schema({
     type:String,
     enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]
   },
-  emergencyContactSchema: emergencyContact,
-  medicalHistorySchema: medicalHistory,
+  emergencyContact: emergencyContactSchema,
+  medicalHistory: medicalHistorySchema,
   isVerified:{
     type:Boolean,
     default:false
