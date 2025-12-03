@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from './ui/card';
 import { Label } from './ui/label'
 import { Input } from './ui/input';
 import { Button } from './ui/button';
+import { Spinner } from './ui/spinner';
 import { Eye } from 'lucide-react';
 import { EyeOff } from 'lucide-react'
 import { Checkbox } from './ui/checkbox'
@@ -82,7 +83,7 @@ const AuthForm = ({type, userRole}) => {
 
   return (
     <div className='h-100vh w-100wh flex justify-center items-center'>
-      <Card className='w-full md:max-w-md lg:max-wd-xl mx-auto p-2'>
+      <Card className='w-full md:max-w-md lg:max-wd-xl mx-auto p-3 space-y-5'>
         <CardContent className='p-2'>
           <h1 className='text-gray-600 font-bold text-2xl text-center'>{title}</h1>
           {error && (
@@ -147,22 +148,28 @@ const AuthForm = ({type, userRole}) => {
                   <div className='flex items-center gap-4'>
                     <Checkbox
                      id='terms'
-                     value={agreeTerms}
-                     onChange={()=>setAgreeTerms(!agreeTerms)}
+                     checked={agreeTerms}
+                     onCheckedChange={(checked)=>setAgreeTerms(checked)}
                      />
                     <Label htmlFor='terms' className='font-normal'>Accept terms and conditions</Label>
                   </div>)
                   }
               <div>
                 <Button
-                type="submit"
-                variant='none'
-                className='w-full bg-black font-bold  text-white hover:bg-gray-600'
-                >
-                  {
-                    btnText
-                  }
-                </Button>
+  type="submit"
+  variant="none"
+  className="w-full bg-black font-bold text-white hover:bg-gray-600"
+  disabled={loading || (isSignup && !agreeTerms)}
+>
+  {loading ? (
+    <div className="flex items-center justify-center gap-2">
+      <Spinner size="8" />
+      {type === "signup" ? "Creating..." : "Signing in..."}
+    </div>
+  ) : (
+    btnText
+  )}
+</Button>
               </div>
               <div className='text-center'>
                 <p>{altLinkText} <Link to={altLinkPath} className='font-bold'>{altLinkAction}</Link></p>

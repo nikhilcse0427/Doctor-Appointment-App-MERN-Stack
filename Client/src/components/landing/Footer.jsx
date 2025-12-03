@@ -9,7 +9,7 @@ const Footer = () => {
 
     {/* Logo & Description */}
     <div>
-      <h2 className="text-2xl font-bold mb-3">HealthCare+</h2>
+      <h2 className="text-2xl font-bold mb-3">Narayana+</h2>
       <p className="text-gray-300 text-sm leading-relaxed">
         Your trusted platform for instant doctor appointments, 24/7 consultations,
         and expert medical guidance — anytime, anywhere.
@@ -42,7 +42,7 @@ const Footer = () => {
     <div>
       <h3 className="font-semibold text-lg mb-3">Contact Us</h3>
       <ul className="space-y-2 text-gray-300 text-sm">
-        <li>Email: support@healthcare.com</li>
+        <li>Email: support@narayana.com</li>
         <li>Phone: +91 98765 43210</li>
         <li>Address: Delhi, India</li>
       </ul>
@@ -51,7 +51,7 @@ const Footer = () => {
 
   {/* Bottom Bar */}
   <div className="mt-10 border-t border-gray-700 pt-4 text-center text-gray-400 text-sm">
-    © {new Date().getFullYear()} HealthCare+. All rights reserved.
+    © {new Date().getFullYear()} Narayana+. All rights reserved.
   </div>
 </footer>
 
