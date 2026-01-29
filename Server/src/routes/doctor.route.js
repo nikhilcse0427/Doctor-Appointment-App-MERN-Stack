@@ -24,7 +24,7 @@ router.get('/list',
 
 //Get Doctor profile
 router.get('/me', authenticate, requireRole('doctor'), async (req, res) => {
-  const doctor = await Doctor.findById(req.user._id).select(-password, -googleId);
+  const doctor = await Doctor.findById(req.user._id).select("-password");
   res.status(200).json({
     success: true,
     message: "Dictor  profile fetch successfully"

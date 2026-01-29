@@ -63,16 +63,20 @@ const PatientOnboardingForm = () => {
 
   const handleSubmit = async () => {
     try {
-      await updateProfile({
-        Phone: formData.phone,
-        dob: formData.dob,
-        gender: formData.gender,
+      const payload = {
+        phoneNumber: formData.phoneNumber,
+        gender: formData.gender?.toLowerCase(),
         bloodGroup: formData.bloodGroup,
         emergencyContact: formData.emergencyContact,
         medicalHistory: formData.medicalHistory,
-      });
+      };
 
-      navigate("/");
+      // only send dob if user selected one
+      if (formData.dob) payload.dob = formData.dob;
+
+      await updateProfile(payload);
+
+      navigate("/patient/dashboard");
     } catch (error) {
       console.error("Profile update failed", error);
     }
@@ -166,17 +170,17 @@ const PatientOnboardingForm = () => {
                           <SelectValue placeholder="Select Gender" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Male">Male</SelectItem>
-                          <SelectItem value="Male">FeMale</SelectItem>
-                          <SelectItem value="Male">Others</SelectItem>
+                          <SelectItem value="male">Male</SelectItem>
+                          <SelectItem value="female">Female</SelectItem>
+                          <SelectItem value="other">Others</SelectItem>
                         </SelectContent>
                       </Select>
                   </div>
 
                   <div className='space-y-2 mt-3'>
                     <Label>Blood Group</Label>
-                    <Select value={formData.gender} 
-                    onValueChange={(value)=>handleSelectChange("gender", value)}>
+                    <Select value={formData.bloodGroup} 
+                    onValueChange={(value)=>handleSelectChange("bloodGroup", value)}>
                       
                         <SelectTrigger>
                           <SelectValue placeholder='Select Blood Group' />

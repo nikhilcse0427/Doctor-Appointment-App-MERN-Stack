@@ -23,6 +23,15 @@ const AuthForm = ({ type, userRole }) => {
 
   const navigate = useNavigate()
 
+  const {
+    registerPatient,
+    registerDoctor,
+    loginPatient,
+    loginDoctor,
+    loading,
+    error,
+  } = userAuthStore();
+
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     if (isSignup && !agreeTerms) return
@@ -44,16 +53,10 @@ const AuthForm = ({ type, userRole }) => {
         navigate(`/onboarding/${userRole}`)
       } else {
         if (userRole === 'doctor') {
-          await loginDoctor({
-            email: formData.email,
-            password: formData.password
-          });
+          await loginDoctor(formData.email, formData.password);
           navigate('/doctor/dashboard')
         } else {
-          await loginPatient({
-            email: formData.email,
-            password: formData.password
-          });
+          await loginPatient(formData.email, formData.password);
           navigate('/patient/dashboard')
         }
       }
@@ -61,17 +64,6 @@ const AuthForm = ({ type, userRole }) => {
 
     }
   }
-
-
-
-  const {
-    registerPatient,
-    registerDoctor,
-    loginPatient,
-    loginDoctor,
-    loading,
-    error,
-  } = userAuthStore();
 
   const isSignup = type == 'signup'
   const title = isSignup ? "Create new Account" : "Welcome back"

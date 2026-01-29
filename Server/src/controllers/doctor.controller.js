@@ -38,7 +38,7 @@ export const searchDoctor = async (req, res, next)=>{
       const skip = (Number(page) - 1) * Number(limit);
       const [items, total] = await Promise.all([
   Doctor.find(filter)
-    .select("-password -googleId")
+    .select("-password")
     .sort(sort)
     .skip(skip)
     .limit(Number(limit)),
@@ -55,7 +55,7 @@ export const updatDoctorProfile = async (req, res, next)=>{
     const updatedData = {...req.body};
     delete updatedData.password;
     updatedData.isVerified= true;
-    const doc = await Doctor.findByIdAndUpdate(req.user._id, updatedData, {new:true}).select("-password -googleId");
+    const doc = await Doctor.findByIdAndUpdate(req.user._id, updatedData, {new:true}).select("-password");
     res.status(200).json({
       "success": true,
       "message": "Doctor Profile successfully updated",
@@ -88,7 +88,7 @@ export const updatDoctorProfile = async (req, res, next)=>{
 //       59,
 //       999 //1sec = 1000 millisecond
 //     )
-//     const doctor = Doctor.findById(doctorId).select("-password -googleId").lean();
+//     const doctor = Doctor.findById(doctorId).select("-password").lean();
 
 //     if(!doctor){
 //       throw new ApiError(400, "Doctor not found");

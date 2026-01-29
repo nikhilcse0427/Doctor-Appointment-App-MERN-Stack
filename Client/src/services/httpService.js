@@ -18,6 +18,9 @@ class HttpService {
 
   async makeRequest(endPoint, method, body, auth = true, options) {
     try {
+      if (!BASE_URL) {
+        throw new Error('VITE_PUBLIC_API_URL is not set in .env file');
+      }
       // Handle URL construction properly - remove trailing slash from BASE_URL and ensure endPoint starts with /
       const baseUrl = BASE_URL?.endsWith('/') ? BASE_URL.slice(0, -1) : BASE_URL;
       const cleanEndPoint = endPoint.startsWith('/') ? endPoint : `/${endPoint}`;
@@ -34,14 +37,34 @@ class HttpService {
       };
 
       const response = await fetch(url, config);
-      const data = await response.json();
-
+      
       if (!response.ok) {
-        throw new Error(data.message || `HTTP ${response.status}: ${response.statusText}`);
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        try {
+          const data = await response.json();
+          // Handle validation errors (array of errors)
+          if (Array.isArray(data.errors)) {
+            errorMessage = data.errors.map(err => err.msg || err.message || JSON.stringify(err)).join(', ');
+          } else if (data.message) {
+            errorMessage = data.message;
+          } else if (data.error) {
+            errorMessage = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
+          }
+        } catch (parseError) {
+          // If response is not JSON, use status text
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
-
+      
+      const data = await response.json();
       return data;
     } catch (error) {
+      if (error.message?.includes('Failed to fetch')) {
+        const connectionError = new Error('Cannot connect to server. Make sure the server is running on ' + BASE_URL);
+        console.error(`API Error [${method} ${endPoint}]:`, connectionError);
+        throw connectionError;
+      }
       console.error(`API Error [${method} ${endPoint}]:`, error);
       throw error;
     }
