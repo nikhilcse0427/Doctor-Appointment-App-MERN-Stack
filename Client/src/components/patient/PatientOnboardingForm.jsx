@@ -88,8 +88,9 @@ const PatientOnboardingForm = () => {
 
   const navigate = useNavigate();
   return (
-    <div className='w-full max-w-2xl max-auto'>
-      <div className='text-center mb-8'>
+    <div className='h-full w-full flex flex-col justify-center items-center'>
+      
+    <div className=' max-auto mt-15'>
         <h1 className='text-3xl font-bold text-gray-900 mb-2'>
           Welcome {user?.name} to Narayana
         </h1>
@@ -119,7 +120,7 @@ const PatientOnboardingForm = () => {
       </div>
       
 
-      <Card className="shallow-lg mt-5">
+      <Card className="shallow-lg mt-5 w-full max-w-2xl">
         <CardContent className="p-8">
 
           {/* ================= step 1 ================ */}
@@ -349,8 +350,7 @@ const PatientOnboardingForm = () => {
         </CardContent>
       </Card>
       
-
-    </div>
+      </div>
   )
 }
 

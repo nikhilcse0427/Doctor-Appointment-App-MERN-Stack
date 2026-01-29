@@ -1,4 +1,5 @@
 import Doctor from "../models/doctor.model.js";
+import { Patient } from "../models/patient.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import ApiError from "../utils/Api_Errors.js";
@@ -7,7 +8,7 @@ const signinToken = (id, type) => {
   return jwt.sign({ id, type }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
-export const registerDoctor = async (req, res) => {
+export const registerDoctor = async (req, res, next) => {
   try {
     const { name, email, password, ...rest } = req.body;
     const existUser = await Doctor.findOne({ email });
@@ -27,38 +28,54 @@ export const registerDoctor = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Doctor successfully registered",
-      token,
-      doctor: createdDoctor,
+      data: {
+        token,
+        user: createdDoctor,
+      },
     });
   } catch (error) {
-    next(new ApiError(500, error.message));
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    }
+    next(error);
   }
 };
 
-export const loginDoctor = async (req, res)=>{
-  try{
-  const { email, password }  = req.body;
-  const existDoctor = await Doctor.findOne({email});
-  if(!existDoctor){
-    throw new ApiError(400, "email does not exist");
-  }
-  const matchPassword = await bcrypt.compare(password, existDoctor.password);
-  if(!matchPassword){
-    throw new ApiError(401, "Invalid password enetered")
-  }
-  const token = signinToken(existDoctor._id, "doctor")
-  return res.status(201).json({
+export const loginDoctor = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const existDoctor = await Doctor.findOne({ email });
+    if (!existDoctor) {
+      throw new ApiError(400, "Email does not exist");
+    }
+    const matchPassword = await bcrypt.compare(password, existDoctor.password);
+    if (!matchPassword) {
+      throw new ApiError(401, "Invalid password entered");
+    }
+    const token = signinToken(existDoctor._id, "doctor");
+    return res.status(200).json({
       success: true,
-      message: "Doctor successfully loggedin",
-      token,
-      doctor: existDoctor,
+      message: "Doctor successfully logged in",
+      data: {
+        token,
+        user: existDoctor,
+      },
     });
-  }catch(error){
-    next(new ApiError(500, error.message))
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    }
+    next(error);
   }
-}
+};
 
-export const registerPatient = async (req, res) => {
+export const registerPatient = async (req, res, next) => {
   try {
     const { name, email, password, ...rest } = req.body;
 
@@ -81,11 +98,19 @@ export const registerPatient = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Patient successfully registered",
-      token,
-      patient: createdPatient,
+      data: {
+        token,
+        user: createdPatient,
+      },
     });
 
   } catch (error) {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    }
     next(error);
   }
 };
@@ -110,11 +135,19 @@ export const loginPatient = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "Patient successfully logged in",
-      token,
-      patient: existPatient,
+      data: {
+        token,
+        user: existPatient,
+      },
     });
 
   } catch (error) {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    }
     next(error);
   }
 };

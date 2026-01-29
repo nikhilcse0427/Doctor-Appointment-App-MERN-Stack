@@ -1,6 +1,6 @@
-import { Patient } from "../models/patient.model";
-import ApiError from "../utils/Api_Errors";
-import computeAgeFromDob from '../utils'
+import { Patient } from "../models/patient.model.js";
+import ApiError from "../utils/Api_Errors.js";
+import computeAgeFromDob from '../utils/date.js'
 
 export const patientDetail = async (req, res, next)=>{
   try {

@@ -1,80 +1,86 @@
-const BASE_URL = import.meta.env.REACT_PUBLIC_API_URL
+const BASE_URL = import.meta.env.VITE_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_URL;
 
-class HttpService{
-  getAuthHeaders(){
-    const token = localStorage.getItem('token');
+class HttpService {
+  getAuthHeaders() {
+    const token = localStorage.getItem("token");
     return {
-      "content-Type": "application/json",
-      ...(token && {Authorization:`Bearer ${token}`}),
-    }
-  };
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
+    };
+  }
 
-  getHeaders(auth = true){
-    if(auth){
+  getHeaders(auth = true) {
+    if (auth) {
       return this.getAuthHeaders();
     }
-    return {"Content-Type": "application/json"}
-  };
+    return { "Content-Type": "application/json" };
+  }
 
-  async makeRequest(endpoint, method, auth=true, body, options={}){
+  async makeRequest(endPoint, method, body, auth = true, options) {
     try {
-      const url = `${BASE_URL}/${endpoint}`;
-
+      // Handle URL construction properly - remove trailing slash from BASE_URL and ensure endPoint starts with /
+      const baseUrl = BASE_URL?.endsWith('/') ? BASE_URL.slice(0, -1) : BASE_URL;
+      const cleanEndPoint = endPoint.startsWith('/') ? endPoint : `/${endPoint}`;
+      const url = `${baseUrl}${cleanEndPoint}`;
       const headers = {
         ...this.getHeaders(auth),
-        ...(options.headers || {})
-      }
+        ...(options?.headers || {}),
+      };
 
       const config = {
         method,
         headers,
-        ...BASE_URL(body && {body:JSON.stringigy(body)}),
+        ...(body && { body: JSON.stringify(body) }),
       };
 
       const response = await fetch(url, config);
       const data = await response.json();
 
-      if(!response.ok){
-        throw new ApiError(data.message || `HTTP ${request.status}: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(data.message || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       return data;
     } catch (error) {
-        console.log("Error: ",error);
-        throw error;
+      console.error(`API Error [${method} ${endPoint}]:`, error);
+      throw error;
     }
   }
-  //Auth required
 
-  async getWithAuth(url, options){
-    return await this.makeRequest(url,"GET", true, null, options);
+  // Auth methods
+  getWithAuth(endPoint, options) {
+    return this.makeRequest(endPoint, "GET", null, true, options);
   }
 
-  async postWithAuth(url, options){
-    return await this.makeRequest(url, "POST", body, options)
+  postWithAuth(endPoint, body, options) {
+    return this.makeRequest(endPoint, "POST", body, true, options);
   }
 
-  async deleteWithAuth(url, options){
-    return await this.makeRequest(url, "DELETE", null, true)
+  putWithAuth(endPoint, body, options) {
+    return this.makeRequest(endPoint, "PUT", body, true, options);
   }
 
-   async postWithoutAuth(endPoint, body, options) {
+  deleteWithAuth(endPoint, options) {
+    return this.makeRequest(endPoint, "DELETE", null, true, options);
+  }
+
+  // Without Auth
+  postWithoutAuth(endPoint, body, options) {
     return this.makeRequest(endPoint, "POST", body, false, options);
   }
 
-  async getWithoutAuth(endPoint, options) {
+  getWithoutAuth(endPoint, options) {
     return this.makeRequest(endPoint, "GET", null, false, options);
   }
-
 }
 
-//singleton instance
+// Export instance
 export const httpService = new HttpService();
 
+// Bind functions to instance
 export const getWithAuth = httpService.getWithAuth.bind(httpService);
-
 export const postWithAuth = httpService.postWithAuth.bind(httpService);
-export const putWithAuth = httpService.postWithAuth.bind(httpService);
+export const putWithAuth = httpService.putWithAuth.bind(httpService);
 export const deleteWithAuth = httpService.deleteWithAuth.bind(httpService);
 
 export const postWithoutAuth = httpService.postWithoutAuth.bind(httpService);

@@ -40,7 +40,7 @@ export const userAuthStore = create(
       loginDoctor: async (email, password) => {
         set({ loading: true, error: null });
         try {
-          const response = await postWithoutAuth("/auth/doctor/login", {
+          const response = await postWithoutAuth("/auth/login/doctor", {
             email,
             password,
           });
@@ -57,7 +57,7 @@ export const userAuthStore = create(
       loginPatient: async (email, password) => {
         set({ loading: true, error: null });
         try {
-          const response = await postWithoutAuth("/auth/patient/login", {
+          const response = await postWithoutAuth("/auth/login/patient", {
             email,
             password,
           });
@@ -74,7 +74,7 @@ export const userAuthStore = create(
       registerDoctor: async (data) => {
         set({ loading: true, error: null });
         try {
-          const response = await postWithoutAuth("/auth/doctor/register", data);
+          const response = await postWithoutAuth("/auth/register/doctor", data);
           get().setUser(response.data.user, response.data.token);
         } catch (error) {
           set({ error: error.message });
@@ -88,7 +88,7 @@ export const userAuthStore = create(
       registerPatient: async (data) => {
         set({ loading: true, error: null });
         try {
-          const response = await postWithoutAuth("/auth/patient/register", data);
+          const response = await postWithoutAuth("/auth/register/patient", data);
           get().setUser(response.data.user, response.data.token);
         } catch (error) {
           set({ error: error.message });

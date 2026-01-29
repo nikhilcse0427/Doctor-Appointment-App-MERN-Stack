@@ -5,8 +5,16 @@ import cookieParser from 'cookie-parser'
 import authRouter from './routes/auth.route.js'
 import doctorRouter from './routes/doctor.route.js'
 import patientRouter from './routes/patient.route.js'
+import cors from 'cors'
+import ApiError from './utils/Api_Errors.js'
 
 const app = express()
+
+app.use(cors({
+  origin: '*',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}))
 
 app.use(morgan('dev'))
 app.use(helmet())
@@ -15,10 +23,28 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(express.static("public"))
 
-app.use('/api/auth', authRouter)
-app.use('/api/doctor', doctorRouter)
-app.use('/api/patient', patientRouter)
+app.use('/auth', authRouter)
+app.use('/doctor', doctorRouter)
+app.use('/patient', patientRouter)
 
+// Error handler middleware
+app.use((err, req, res, next) => {
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+    });
+  }
+
+  // Handle other errors
+  console.error('Error:', err);
+  return res.status(500).json({
+    success: false,
+    message: err.message || 'Internal server error',
+  });
+});
+
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,

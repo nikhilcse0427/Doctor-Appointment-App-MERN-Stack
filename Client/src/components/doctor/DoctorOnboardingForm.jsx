@@ -131,7 +131,7 @@ const DoctorOnboardingForm = () => {
   // ---------------------------------------
   return (
     <div className="w-full max-w-2xl mx-auto">
-      <Card className="shadow-lg">
+      <Card className="shadow-lg w-full max-w-2xl mx-auto mt-15">
         <CardContent className="p-8">
           {/* ---------------------- STEP 1 ---------------------- */}
           {currentStep === 1 && (

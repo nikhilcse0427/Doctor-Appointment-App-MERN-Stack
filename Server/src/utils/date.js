@@ -13,4 +13,4 @@ const computeAgeFromDob = (dob)=>{
   return age
 }
 
-return {computeAgeFromDob}
+export default computeAgeFromDob
