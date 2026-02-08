@@ -78,13 +78,6 @@ export default function BookingPage() {
 
   const handleBook = async () => {
     setError('');
-    // Require login at the moment of booking (confirm), not when viewing the page.
-    if (!user || user.type !== 'patient') {
-      // Send user to patient login and return to this booking page after login.
-      navigate('/login/patient', { state: { redirectTo: `/patient/booking/${doctorId}` } });
-      return;
-    }
-
     if (!currentDoctor || !selectedSlot || symptoms.trim().length < 10) {
       setError('Please select a slot and enter symptoms (min 10 characters).');
       return;
@@ -93,6 +86,19 @@ export default function BookingPage() {
     const platformFees = 0;
     const totalAmount = consultationFees + platformFees;
     try {
+      // persist pending booking so we can resume after login if needed
+      const pending = {
+        doctorId: currentDoctor._id,
+        date: selectedDate,
+        slotStartIso: selectedSlot.start.toISOString(),
+        slotEndIso: selectedSlot.end.toISOString(),
+        consultationType,
+        symptoms: symptoms.trim(),
+        consultationFees,
+        platformFees,
+        totalAmount,
+      };
+      sessionStorage.setItem('pendingBooking', JSON.stringify(pending));
       const appointment = await bookAppointment({
         doctorId: currentDoctor._id,
         date: selectedDate,
@@ -104,11 +110,47 @@ export default function BookingPage() {
         platformFees,
         totalAmount,
       });
+      // remove pending on success
+      sessionStorage.removeItem('pendingBooking');
       navigate('/patient/booking/payment', { state: { appointment } });
     } catch (err) {
-      setError(err.message || 'Booking failed');
+      const msg = err?.message || '';
+      // if auth error, redirect to login and allow resume
+      if (msg.includes('401') || /unauthorized/i.test(msg) || /access denied/i.test(msg)) {
+        navigate('/login/patient', { state: { redirectTo: `/patient/booking/${doctorId}` } });
+        return;
+      }
+      setError(msg || 'Booking failed');
     }
   };
+
+  // If there's a pending booking (saved before redirect to login) and user is logged in, try to complete it
+  useEffect(() => {
+    const tryPending = async () => {
+      const raw = sessionStorage.getItem('pendingBooking');
+      if (!raw) return;
+      if (!user || user.type !== 'patient') return;
+      try {
+        const pending = JSON.parse(raw);
+        // ensure this booking is for the same doctor page
+        if (String(pending.doctorId) !== String(doctorId)) return;
+        // attempt to create appointment
+        const appointment = await bookAppointment(pending);
+        sessionStorage.removeItem('pendingBooking');
+        navigate('/patient/booking/payment', { state: { appointment } });
+      } catch (err) {
+        // if still failing due to auth, redirect to login again; otherwise show error
+        const msg = err?.message || '';
+        if (msg.includes('401') || /unauthorized/i.test(msg) || /access denied/i.test(msg)) {
+          navigate('/login/patient', { state: { redirectTo: `/patient/booking/${doctorId}` } });
+          return;
+        }
+        setError(msg || 'Failed to complete pending booking');
+      }
+    };
+    tryPending();
+    // run when user or doctorId changes
+  }, [user, doctorId, bookAppointment, navigate]);
 
   // allow anonymous users to view booking page; require login only to confirm booking
 
