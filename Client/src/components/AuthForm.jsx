@@ -8,7 +8,7 @@ import { Eye } from 'lucide-react';
 import { EyeOff } from 'lucide-react'
 import { Checkbox } from './ui/checkbox'
 import { userAuthStore } from '../store/store';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const AuthForm = ({ type, userRole }) => {
   const [formData, setFormDate] = useState({
@@ -22,6 +22,7 @@ const AuthForm = ({ type, userRole }) => {
   const [agreeTerms, setAgreeTerms] = useState(false);
 
   const navigate = useNavigate()
+  const location = useLocation()
 
   const {
     registerPatient,
@@ -51,13 +52,15 @@ const AuthForm = ({ type, userRole }) => {
           });
         }
         navigate(`/onboarding/${userRole}`)
-      } else {
+        } else {
         if (userRole === 'doctor') {
           await loginDoctor(formData.email, formData.password);
-          navigate('/doctor/dashboard')
+          const redirect = location.state?.redirectTo || '/doctor/dashboard';
+          navigate(redirect);
         } else {
           await loginPatient(formData.email, formData.password);
-          navigate('/patient/dashboard')
+          const redirect = location.state?.redirectTo || '/patient/dashboard';
+          navigate(redirect);
         }
       }
     } catch (error) {
