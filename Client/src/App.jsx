@@ -32,48 +32,10 @@ const LandingPage = () => {
   )
 }
 
-// Placeholder Dashboard Components (to be implemented later)
-const PatientDashboard = () => {
-  return (
-    <div className='min-h-screen mx-7'>
-      <Header showDashboardNav={true} />
-      <main className="pt-16">
-        <div className="container mx-auto px-8">
-          <h1 className="text-3xl font-bold">Patient Dashboard</h1>
-          <p>Patient dashboard content goes here</p>
-        </div>
-      </main>
-    </div>
-  )
-}
-
-const DoctorDashboard = () => {
-  return (
-    <div className='min-h-screen mx-7'>
-      <Header showDashboardNav={true} />
-      <main className="pt-16">
-        <div className="container mx-auto px-8">
-          <h1 className="text-3xl font-bold">Doctor Dashboard</h1>
-          <p>Doctor dashboard content goes here</p>
-        </div>
-      </main>
-    </div>
-  )
-}
-
-const DoctorAppointments = () => {
-  return (
-    <div className='min-h-screen mx-7'>
-      <Header showDashboardNav={true} />
-      <main className="pt-16">
-        <div className="container mx-auto px-8">
-          <h1 className="text-3xl font-bold">Doctor Appointments</h1>
-          <p>Doctor appointments content goes here</p>
-        </div>
-      </main>
-    </div>
-  )
-}
+// Real Dashboard components
+import PatientDashboard from './dashboard/PatientDashboard'
+import DoctorDashboard from './dashboard/DoctorDashboard'
+const DoctorAppointments = () => <div>Doctor Appointments Placeholder</div> // Until I find or create this component
 
 const App = () => {
   return (
