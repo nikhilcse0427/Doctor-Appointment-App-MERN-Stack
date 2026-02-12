@@ -1,92 +1,112 @@
 import mongoose from 'mongoose'
-import {healthcareCategoriesList} from '../constant.js'
+import { healthcareCategoriesList } from '../constant.js'
 const dailyTimeAvailabilitySchema = new mongoose.Schema({
-  start:{
-    type:String
+  start: {
+    type: String
   },
-  end:{
-    type:String
+  end: {
+    type: String
   }
-},{_id:false})
+}, { _id: false })
 
 const availabiltyRangeSchema = new mongoose.Schema({
-  startDate:{
-    type:String
+  startDate: {
+    type: String
   },
-  endDate:{
-    type:String
+  endDate: {
+    type: String
   },
-  excludedWeekDays:{
-    type:Number,
+  excludedWeekdays: {
+    type: [Number],
     default: []
   }
-},{_id:false})
+}, { _id: false })
 
 const hospitalDetailSchema = new mongoose.Schema({
-  name:{
-    type:String
+  name: {
+    type: String
   },
-  address:{
-    type:String,
+  address: {
+    type: String,
   },
-  city:{
-    type:String
+  city: {
+    type: String
   }
-},{_id:false})
+}, { _id: false })
 const doctorSchema = new mongoose.Schema({
-  name:{
-    type:String,
-    required:true
+  name: {
+    type: String,
+    required: true
   },
-  email:{
-    type:String,
-    unique:true,
-    required:true
+  email: {
+    type: String,
+    unique: true,
+    required: true
   },
-  password:{
-    type:String,
-    required:true
+  password: {
+    type: String,
+    required: true
   },
-  profileImg:{
-    type:String,
-    default:""
+  profileImg: {
+    type: String,
+    default: ""
   },
-  specialisation:{
-    type:String,
-    enum: ["Cardiologist", "Dertemologist", "Oethopedic", "permiadictrician", "Neurologist", "gercimologist", "General Physians", "ETN Specialist", "Physichrist", "Optheomologist"]
+  specialization: {
+    type: String,
+    enum: [
+      "General Physician",
+      "Pediatrician",
+      "Cardiologist",
+      "Dermatologist",
+      "Gynecologist",
+      "Orthopedic Surgeon",
+      "Psychiatrist",
+      "Neurologist",
+      "Endocrinologist",
+      "Gastroenterologist",
+      "Pulmonologist",
+      "Oncologist",
+      "Urologist",
+      "Ophthalmologist",
+      "ENT Specialist"
+    ]
   },
-  category:{
-    type:String,
-    enum:healthcareCategoriesList,
-    required:false
+  category: {
+    type: [String],
+    enum: healthcareCategoriesList,
+    required: false
   },
-  qualification:{
-    type:String
+  qualification: {
+    type: String
   },
-  experience:{
-    type:Number
+  experience: {
+    type: Number
   },
-  about:{
-    type:String
+  about: {
+    type: String
   },
-  fees:{
-    type:Number
+  fees: {
+    type: Number
   },
   hospitalInfo: hospitalDetailSchema,
-  phoneNum:{
-    type:Number
-  }, 
-  availabiltyRange: dailyTimeAvailabilitySchema,
-  dailyTimeRanges: { type: [dailyTimeAvailabilitySchema], default:[]},
-  slotDurationInMinutes:{
-    type:Number,
-    default:30
+  phoneNum: {
+    type: Number
   },
-  isVerified:{
-    type:Boolean,
-    default:false
+  availabilityRange: availabiltyRangeSchema,
+  dailyTimeRanges: { type: [dailyTimeAvailabilitySchema], default: [] },
+  slotDurationInMinutes: {
+    type: Number,
+    default: 30
+  },
+  type: {
+    type: String,
+    default: "doctor"
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
   }
-},{timestamps:true})
+}, { timestamps: true })
 
 const Doctor = mongoose.model('Doctor', doctorSchema)
 export default Doctor

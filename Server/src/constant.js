@@ -6,5 +6,6 @@ export const healthcareCategoriesList = [
   "Children's Health",
   "Senior Health",
   "Women's Health",
+  "Men's Health",
   "Wellness"
 ]

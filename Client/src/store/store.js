@@ -121,20 +121,23 @@ export const userAuthStore = create(
       },
 
       // Update profile
-      updateProfile: async (data) => {
+      updateProfile: async (data, roleOverride = null) => {
         set({ loading: true, error: null });
         try {
           const user = get().user;
-          if (!user) throw new Error("No user found");
+          if (!user && !roleOverride) throw new Error("No user found");
 
+          const role = roleOverride || user?.type;
           const endPoint =
-            user.type === "doctor"
+            role === "doctor"
               ? "/doctor/onboarding/update"
               : "/patient/onboarding/update";
 
           const response = await putWithAuth(endPoint, data);
 
-          set({ user: { ...user, ...response.data } });
+          // Update local user state with the returned doctor/patient object
+          const updatedUser = response.data.doctor || response.data.patient || response.data;
+          set({ user: { ...user, ...updatedUser, type: role } });
         } catch (error) {
           set({ error: error.message });
           throw error;

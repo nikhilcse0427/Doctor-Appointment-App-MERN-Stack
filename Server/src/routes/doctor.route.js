@@ -27,7 +27,8 @@ router.get('/me', authenticate, requireRole('doctor'), async (req, res) => {
   const doctor = await Doctor.findById(req.user._id).select("-password");
   res.status(200).json({
     success: true,
-    message: "Dictor  profile fetch successfully"
+    message: "Dictor  profile fetch successfully",
+    data: doctor
   })
 })
 
@@ -38,7 +39,7 @@ router.put('/onboarding/update', authenticate, requireRole('doctor'),
     body('name').optional().notEmpty(),
     body('specialization').optional().notEmpty(),
     body('qualification').optional().notEmpty(),
-    body('category').optional().notEmpty(),
+    body('category').optional().isArray(),
     body('experience').optional().isInt({ min: 0 }),
     body('about').optional().isString(),
     body('fees').optional().isInt({ min: 0 }),
@@ -48,7 +49,7 @@ router.put('/onboarding/update', authenticate, requireRole('doctor'),
     body('availabilityRange.excludedWeekdays').optional().isArray(),
     body('dailyTimeRanges').isArray({ min: 1 }),
     body('dailyTimeRanges.*.start').isString(),
-    body('dailyTimeRange.*.end').isString(),
+    body('dailyTimeRanges.*.end').isString(),
     body('slotDurationInMinutes').optional().isInt({ min: 5, max: 180 })
   ], validate, updatDoctorProfile
 )

@@ -1,7 +1,7 @@
-import React from "react";
-import { useLocation, Link } from "react-router-dom";
-import { User, Bell, Calendar, Stethoscope, Settings } from "lucide-react";
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import { User, Bell, Calendar, Stethoscope, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { userAuthStore } from "@/store/store";
 
 import {
   DropdownMenu,
@@ -16,21 +16,15 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Header = ({ showDashboardNav = true }) => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = userAuthStore();
 
-  const user = {
-    type: "patient",
-    name: "Nikhil Verma",
-    profileImage: "https://github.com/maxleiter.png", // empty => fallback shows NV
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
-  const isAuthenticated = true; // change this to true to test login state
-
-  const landingNav = [
-    { label: "HOME", href: "/" },
-    { label: "ALL DOCTORS", href: "/doctors" },
-    { label: "ABOUT", href: "/about" },
-    { label: "CONTACT", href: "/contact" },
-  ];
+  const landingNav = [];
 
   // Add Dashboard link to landing nav if authenticated
   if (isAuthenticated && !showDashboardNav) {
@@ -114,9 +108,9 @@ const Header = ({ showDashboardNav = true }) => {
                 <Link
                   key={idx}
                   to={item.href}
-                  className={`text-sm font-bold transition-colors ${item.label === "DASHBOARD"
-                    ? "text-blue-600 hover:text-blue-800 underline decoration-2 underline-offset-4"
-                    : "text-gray-700 hover:text-blue-600"
+                  className={`text-sm font-bold transition-all px-5 py-2 rounded-md ${item.label === "DASHBOARD"
+                    ? "bg-primary text-white hover:bg-primary/90 shadow-md transform hover:scale-105"
+                    : "text-gray-700 hover:text-primary hover:bg-gray-50"
                     }`}
                 >
                   {item.label}
@@ -151,8 +145,8 @@ const Header = ({ showDashboardNav = true }) => {
                       <p className="text-gray-900 text-xs font-semibold leading-none">
                         {user?.name}
                       </p>
-                      <p className="text-[10px] text-gray-500 capitalize">
-                        {user?.type}
+                      <p className="text-[10px] text-gray-500 font-medium">
+                        {user?.type === 'doctor' ? 'Doctor' : 'Patient'}
                       </p>
                     </div>
                   </Button>
@@ -171,8 +165,8 @@ const Header = ({ showDashboardNav = true }) => {
                         <p className="text-sm font-semibold text-gray-900 truncate">
                           {user?.name}
                         </p>
-                        <p className="text-xs text-gray-500 capitalize truncate">
-                          {user?.type}
+                        <p className="text-xs text-gray-500 font-medium">
+                          {user?.type === 'doctor' ? 'Doctor Account' : 'Patient Account'}
                         </p>
                       </div>
                     </div>
@@ -183,6 +177,14 @@ const Header = ({ showDashboardNav = true }) => {
                       <Settings className="w-4 h-4 mr-2" />
                       Profile
                     </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="flex items-center text-red-600 focus:text-red-600 cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

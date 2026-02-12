@@ -37,16 +37,20 @@ class HttpService {
       };
 
       const response = await fetch(url, config);
-      
+
       if (!response.ok) {
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
         try {
           const data = await response.json();
-          // Handle validation errors (array of errors)
+          // Handle validation errors (array or string message)
           if (Array.isArray(data.errors)) {
             errorMessage = data.errors.map(err => err.msg || err.message || JSON.stringify(err)).join(', ');
+          } else if (Array.isArray(data.message)) {
+            errorMessage = data.message.map(err => err.msg || err.message || JSON.stringify(err)).join(', ');
+          } else if (typeof data.message === 'object' && data.message !== null) {
+            errorMessage = JSON.stringify(data.message);
           } else if (data.message) {
-            errorMessage = data.message;
+            errorMessage = typeof data.message === 'string' ? data.message : JSON.stringify(data.message);
           } else if (data.error) {
             errorMessage = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
           }
@@ -56,7 +60,7 @@ class HttpService {
         }
         throw new Error(errorMessage);
       }
-      
+
       const data = await response.json();
       return data;
     } catch (error) {

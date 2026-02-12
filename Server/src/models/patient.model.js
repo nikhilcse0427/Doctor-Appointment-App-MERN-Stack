@@ -6,80 +6,84 @@ const emergencyContactSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  phoneNum:{
+  phoneNum: {
     type: String,
     required: true
   },
-  relationship:{
-    type: String, 
+  relationship: {
+    type: String,
     required: true
   }
-},{id:false})
+}, { id: false })
 
 const medicalHistorySchema = new mongoose.Schema({
-  allergies:{
-    type: String, 
+  allergies: {
+    type: String,
     default: ""
-  }, 
-  currentMeditation:{
-    type: String, 
+  },
+  currentMeditation: {
+    type: String,
     default: ""
   },
   chronicCondion: {
-    type: String, 
+    type: String,
     default: ""
   }
-},{id:false})
+}, { id: false })
 
 const patientSchema = new mongoose.Schema({
-  name:{
+  name: {
     type: String,
     required: true
   },
-  email:{
-    type:String,
+  email: {
+    type: String,
     unique: true,
     required: true
   },
-  password:{
+  password: {
     type: String,
     required: true
   },
-  profileImg:{
-    type:String,
+  profileImg: {
+    type: String,
     default: ""
   },
-  phoneNumber:{
-    type:String
+  phoneNumber: {
+    type: String
   },
-  dob:{
+  dob: {
     type: Date,
   },
-  age:{
-    type:Number
+  age: {
+    type: Number
   },
-  gender:{
-    type:String,
+  gender: {
+    type: String,
     enum: ["Male", "Female", "Others"]
   },
-  bloodGroup:{
-    type:String,
+  bloodGroup: {
+    type: String,
     enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]
   },
   emergencyContact: emergencyContactSchema,
   medicalHistory: medicalHistorySchema,
-  isVerified:{
-    type:Boolean,
-    default:false
+  type: {
+    type: String,
+    default: "patient"
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
   }
-},{timestamps:true})
+}, { timestamps: true })
 
-patientSchema.pre('save',function(next){
-  if(this.dob && this.isModified('dob')){
+patientSchema.pre('save', function (next) {
+  if (this.dob && this.isModified('dob')) {
     this.age = computeAgeFromDob(this.dob)
   }
   next()
 })
 
 const Patient = mongoose.model('Patient', patientSchema)
-export {Patient}
+export { Patient }

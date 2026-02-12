@@ -14,6 +14,8 @@ import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { AlertCircle } from "lucide-react";
 
 // Use the central auth store
 import { userAuthStore } from "../../store/store";
@@ -47,7 +49,7 @@ const DoctorOnboardingForm = () => {
     slotDurationMinutes: 30,
   });
 
-  const { updateProfile, loading } = userAuthStore();
+  const { updateProfile, loading, error, clearError } = userAuthStore();
   const navigate = useNavigate();
 
   // ---------------------------------------
@@ -96,18 +98,18 @@ const DoctorOnboardingForm = () => {
         specialization: formData.specialization,
         category: formData.categories,
         qualification: formData.qualification,
-        experience: formData.experience,
+        experience: Number(formData.experience),
         about: formData.about,
-        fees: formData.fees,
+        fees: Number(formData.fees),
         hospitalInfo: formData.hospitalInfo,
         availabilityRange: {
-          startDate: new Date(formData.availabilityRange.startDate),
-          endDate: new Date(formData.availabilityRange.endDate),
+          startDate: formData.availabilityRange.startDate ? new Date(formData.availabilityRange.startDate) : undefined,
+          endDate: formData.availabilityRange.endDate ? new Date(formData.availabilityRange.endDate) : undefined,
           excludedWeekdays: formData.availabilityRange.excludedWeekdays,
         },
         dailyTimeRanges: formData.dailyTimeRanges,
-        slotDurationMinutes: formData.slotDurationMinutes,
-      });
+        slotDurationInMinutes: Number(formData.slotDurationMinutes),
+      }, 'doctor');
 
       navigate("/doctor/dashboard");
     } catch (error) {
@@ -133,6 +135,15 @@ const DoctorOnboardingForm = () => {
     <div className="w-full max-w-2xl mx-auto">
       <Card className="shadow-lg w-full max-w-2xl mx-auto mt-15">
         <CardContent className="p-8">
+          {error && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Registration Error</AlertTitle>
+              <AlertDescription>
+                {error}
+              </AlertDescription>
+            </Alert>
+          )}
           {/* ---------------------- STEP 1 ---------------------- */}
           {currentStep === 1 && (
             <div className="space-y-6">

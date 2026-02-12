@@ -31,6 +31,15 @@ app.use('/patient', patientRouter)
 app.use((err, req, res, next) => {
   if (err instanceof ApiError) {
     // Handle validation errors (array of errors)
+    if (Array.isArray(err.errors) && err.errors.length > 0) {
+      const errorMessages = err.errors.map(e => e.msg || e.message || JSON.stringify(e)).join(', ');
+      return res.status(err.statusCode).json({
+        success: false,
+        message: errorMessages,
+        errors: err.errors,
+      });
+    }
+
     if (Array.isArray(err.message)) {
       const errorMessages = err.message.map(e => e.msg || e.message || JSON.stringify(e)).join(', ');
       return res.status(err.statusCode).json({
@@ -39,9 +48,11 @@ app.use((err, req, res, next) => {
         errors: err.message,
       });
     }
+
     return res.status(err.statusCode).json({
       success: false,
       message: err.message,
+      errors: err.errors
     });
   }
 
