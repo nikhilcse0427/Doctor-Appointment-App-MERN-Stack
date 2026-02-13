@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Header from '../landing/Header';
-import { useDoctorStore } from '../../store/doctorStore';
+import useDoctorStore from '../../store/doctorStore';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import { userAuthStore } from '../../store/store';
 import { Card, CardContent } from '../ui/card';

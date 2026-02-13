@@ -1,5 +1,5 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
-import { User, Bell, Calendar, Stethoscope, Settings, LogOut } from "lucide-react";
+import { User, Bell, Calendar, Stethoscope, Settings, LogOut, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { userAuthStore } from "@/store/store";
 
@@ -26,11 +26,15 @@ const Header = ({ showDashboardNav = true }) => {
 
   const landingNav = [];
 
-  // Add Dashboard link to landing nav if authenticated
+  // Add links to landing nav if authenticated
   if (isAuthenticated && !showDashboardNav) {
     landingNav.push({
       label: "DASHBOARD",
       href: `/${user.type}/dashboard`
+    });
+    landingNav.push({
+      label: "DOCTORS",
+      href: "/doctors"
     });
   }
 
@@ -44,6 +48,12 @@ const Header = ({ showDashboardNav = true }) => {
           icon: Calendar,
           href: "/patient/appointment",
           active: pathname.includes("/patient/appointment"),
+        },
+        {
+          label: "Find Doctors",
+          icon: Search,
+          href: "/doctors",
+          active: pathname === "/doctors",
         },
       ];
     }
@@ -196,14 +206,15 @@ const Header = ({ showDashboardNav = true }) => {
                   Login
                 </Button>
               </Link>
-
-              <Link to="/signup/patient" className="hidden md:block">
-                <Button className="bg-blue-400 text-white font-bold hover:bg-blue-700 text-xs py-1 px-3">
-                  Booking consultation
-                </Button>
-              </Link>
             </div>
           )}
+
+          {/* Booking consultation button visible to everyone */}
+          <Link to="/doctors" className="hidden md:block">
+            <Button className="bg-blue-400 text-white font-bold hover:bg-blue-700 text-xs py-1 px-3">
+              Booking consultation
+            </Button>
+          </Link>
         </div>
       </div>
     </header>

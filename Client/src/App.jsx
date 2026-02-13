@@ -16,6 +16,7 @@ import SignupDoctor from './auth/signup/SignupDoctor'
 // Onboarding components
 import PatientOnboardingForm from './components/patient/PatientOnboardingForm'
 import DoctorOnboardingForm from './components/doctor/DoctorOnboardingForm'
+import DoctorList from './components/patient/DoctorList'
 
 // Landing Page Component
 const LandingPage = () => {
@@ -55,6 +56,7 @@ const App = () => {
 
       {/* Patient Routes */}
       <Route path="/patient/dashboard" element={<PatientDashboard />} />
+      <Route path="/doctors" element={<DoctorList />} />
 
       {/* Doctor Routes */}
       <Route path="/doctor/dashboard" element={<DoctorDashboard />} />

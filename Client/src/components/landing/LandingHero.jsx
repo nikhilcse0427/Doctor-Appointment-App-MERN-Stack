@@ -19,7 +19,7 @@ const LandingHero = () => {
         </div>
         <div className='flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4'>
           <Button outline='ghost' className='bg-blue-700 px-4 py-3 sm:px-6 sm:py-4 md:p-7 text-base sm:text-lg md:text-xl lg:text-2xl hover:bg-black w-full sm:w-auto'
-            onClick={() => navigate('/login/patient')}
+            onClick={() => navigate('/doctors')}
           >Book a video visit</Button>
           <Link to='/login/doctor' className='w-full sm:w-auto'>
             <Button outline='ghost' className='bg-blue-700 w-full px-4 py-3 sm:px-6 sm:py-4 md:p-7 text-base sm:text-lg md:text-xl lg:text-2xl hover:bg-black'>Login as Doctor</Button>
