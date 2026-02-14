@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom"
+import { useSearchParams, Link } from "react-router-dom"
 import useDoctorStore from '../../store/doctorStore.js'
 import Header from "../landing/Header";
-import { Search } from 'lucide-react';
+import { Search, Funnel, X, Star, MapPin } from 'lucide-react';
 import { Input } from "@/components/ui/input"
 import { Button } from "../ui/button.jsx";
-import { Funnel } from 'lucide-react';
 import { Badge } from "@/components/ui/badge"
 import { healthcareCategories, healthCareCategoriesList } from "@/lib/constants.js";
-import { X } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -18,6 +16,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { specializations, cities } from "@/lib/constants.js";
+import { Label } from "../ui/label.jsx";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 import {
   Select,
@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+
 
 
 const DoctorList = () => {
@@ -100,7 +101,7 @@ const DoctorList = () => {
           <div className="absolute right-30 h-12">
             <Button
               onClick={() => {
-                return showFilters?setShowFilters(false):setShowFilters(true)
+                return showFilters ? setShowFilters(false) : setShowFilters(true)
               }}
               className="h-12">
               <Funnel />
@@ -241,6 +242,145 @@ const DoctorList = () => {
             </CardContent>
           </Card>
         )}
+
+        <div className="mt-8 px-24 py-8">
+          {/** Num of doctors */}
+          <div className="flex items-center justify-between mb-6">
+            <Label className="text-lg font-semibold text-gray-700">
+              {loading ? "Searching for doctors..." : `${doctors.length} Doctors found`}
+            </Label>
+          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Card key={i} className="animate-pulse border-none shadow-sm">
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto"></div>
+                      <div className="space-y-3">
+                        <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/2 mx-auto"></div>
+                        <div className="h-3 bg-gray-200 rounded w-2/3 mx-auto"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/3 mx-auto"></div>
+                        <div className="h-10 bg-gray-200 rounded mt-4"></div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : doctors.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {doctors.map((doctor) => (
+                <Card
+                  key={doctor._id}
+                  className="group hover:shadow-2xl transition-all duration-300 bg-white border-0 shadow-lg rounded-2xl overflow-hidden flex flex-col h-full"
+                >
+                  <CardContent className="p-8 flex flex-col h-full">
+                    <div className="text-center mb-6">
+                      <div className="relative inline-block mb-4">
+                        <Avatar className="w-24 h-24 mx-auto border-4 border-blue-50 group-hover:border-blue-100 transition-colors">
+                          <AvatarImage
+                            src={doctor.profileImg || doctor.profileImage}
+                            alt={doctor.name}
+                            className="object-cover"
+                          />
+                          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-700 text-white text-2xl font-bold">
+                            {doctor.name.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="absolute -bottom-1 -right-1 bg-green-500 w-5 h-5 rounded-full border-4 border-white"></div>
+                      </div>
+
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-700 transition-colors mb-1">
+                        {doctor.name}
+                      </h3>
+                      <p className="text-blue-600 font-medium text-sm mb-2">
+                        {doctor.specialization}
+                      </p>
+
+                      <div className="flex items-center justify-center gap-1.5 text-gray-500 text-xs mb-3">
+                        <span className="font-semibold text-gray-700">{doctor.experience} years</span>
+                        <span>•</span>
+                        <span>Experience</span>
+                      </div>
+
+                      <div className="flex items-center justify-center space-x-1 mb-4">
+                        <div className="flex">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className="w-4 h-4 fill-amber-400 text-amber-400"
+                            />
+                          ))}
+                        </div>
+                        <span className="font-bold text-gray-900 ml-1">5.0</span>
+                        <span className="text-gray-400 text-xs"> (620 reviews)</span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 justify-center mb-6">
+                      {(Array.isArray(doctor.category) ? doctor.category : []).slice(0, 2).map((category, idx) => (
+                        <Badge
+                          key={idx}
+                          variant="secondary"
+                          className="bg-blue-50 text-blue-700 border-none px-3 py-1 text-[10px] font-bold uppercase tracking-wider"
+                        >
+                          {category}
+                        </Badge>
+                      ))}
+
+                      <Badge
+                        variant="secondary"
+                        className="bg-amber-50 text-amber-700 border-none px-3 py-1 text-[10px] font-bold uppercase tracking-wider"
+                      >
+                        <Star className="w-3 h-3 mr-1 fill-amber-700" />
+                        Popular
+                      </Badge>
+                    </div>
+
+                    <div className="space-y-3 mb-8">
+                      <div className="flex items-center justify-center text-gray-600 bg-gray-50 rounded-lg py-2 px-4 border border-gray-100">
+                        <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+                        <span className="text-sm font-medium">{doctor.hospitalInfo.city}</span>
+                      </div>
+
+                      <div className="flex justify-between items-center py-2 px-4">
+                        <span className="text-gray-500 text-sm">Consultation</span>
+                        <span className="font-bold text-green-600 text-xl">₹{doctor.fees}</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-auto">
+                      <Link to={`/patient/booking/${doctor._id}`} className="block">
+                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-6 text-base font-semibold shadow-lg shadow-blue-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
+                          Book Appointment
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card className="p-20 text-center border-dashed border-2 border-gray-200 bg-gray-50/50 rounded-3xl">
+              <div className="text-gray-300 mb-6">
+                <Search className="w-20 h-20 mx-auto" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-700 mb-2">No doctors found</h3>
+              <p className="text-gray-500 max-w-sm mx-auto mb-8">
+                We couldn't find any healthcare providers matching your current search or filter criteria.
+              </p>
+              <Button
+                onClick={clearFilters}
+                className="bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 px-8 rounded-full"
+              >
+                Clear all filters
+              </Button>
+            </Card>
+          )}
+        </div>
 
 
       </div>
