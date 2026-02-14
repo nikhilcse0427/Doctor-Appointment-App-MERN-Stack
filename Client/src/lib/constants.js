@@ -144,3 +144,21 @@ export const faqs = [
     answer: "Many of our doctors are available for same-day appointments, and some offer immediate consultations. You can book appointments that fit your schedule, often within hours of your request."
   }
 ];
+
+export const cities = [
+  "Mumbai",
+  "Delhi",
+  "Kolkata",
+  "Chennai",
+  "Bengaluru",
+  "Hyderabad",
+  "Ahmedabad",
+  "Pune",
+  "Surat",
+  "Jaipur",
+  "Lucknow",
+  "Kanpur",
+  "Nagpur",
+  "Indore",
+  "Bhopal"
+];
