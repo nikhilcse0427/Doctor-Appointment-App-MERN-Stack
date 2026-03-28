@@ -16,12 +16,17 @@ connectCloudinary()
 // middlewares
 app.use(express.json())
 app.use(cors({
-  origin: [
-    "https://doctor-appointment-app-mern-stack-g.vercel.app",
-    "https://doctor-appointment-app-mern-stack-5.vercel.app",
-    "http://localhost:3000", 
-    "http://localhost:5173"  
-  ],
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true)
+
+    // dynamically allow localhost and any .vercel.app domain
+    if (origin.startsWith("http://localhost:") || origin.endsWith(".vercel.app")) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'token'],
