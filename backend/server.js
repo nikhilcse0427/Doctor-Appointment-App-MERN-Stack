@@ -17,8 +17,8 @@ connectCloudinary()
 app.use(express.json())
 app.use(cors({
   origin: [
-    "doctor-appointment-app-mern-stack-g.vercel.app",
-    "doctor-appointment-app-mern-stack-5.vercel.app",
+    "https://doctor-appointment-app-mern-stack-g.vercel.app",
+    "https://doctor-appointment-app-mern-stack-5.vercel.app",
     "http://localhost:3000", 
     "http://localhost:5173"  
   ],
@@ -38,3 +38,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => console.log(`Server started on PORT:${port}`))
+
+export default app;
